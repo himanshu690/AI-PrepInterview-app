@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import {useNavigate} from "react-router-dom";
 import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper';
-
+import { API_PATHS } from '../../utils/apiPath';
+import axiosInstance from '../../utils/axiosInstance'; // Or the correct path
 
 const Login = ({ setCurrentPage }) => {
   const [email, setEmail] = useState("");
@@ -24,6 +25,17 @@ const Login = ({ setCurrentPage }) => {
     setError("");
     //login API Call
     try{
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+      console.log("✅ Login Successful! Server responded with:", response.data);
+      const { token } = response.data;
+      if(token){
+        localStorage.setItem("token", token);
+        navigate("/dashboard");
+      }
+
     } catch(error){
       if(error.response && error.response.data.message) {
         setError("Something went wrong. Please try again.");
