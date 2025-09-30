@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {useNavigate} from "react-router-dom";
 import Input from '../../components/Inputs/Input';
 import { validateEmail } from '../../utils/helper';
 import { API_PATHS } from '../../utils/apiPath';
 import axiosInstance from '../../utils/axiosInstance'; // Or the correct path
+import { UserContext } from '../../context/userContext';
 
 const Login = ({ setCurrentPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  const {updateUser} = useContext(UserContext)
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -33,12 +36,15 @@ const Login = ({ setCurrentPage }) => {
       const { token } = response.data;
       if(token){
         localStorage.setItem("token", token);
+        updateUser(response.data)
         navigate("/dashboard");
       }
 
     } catch(error){
       if(error.response && error.response.data.message) {
-        setError("Something went wrong. Please try again.");
+        setError(error.response.data.message);
+      }else{
+        setError("Something went wrong. please try again.")
       }
     }
   };
