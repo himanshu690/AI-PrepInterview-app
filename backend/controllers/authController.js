@@ -37,7 +37,7 @@ const registerUser = async(req, res) =>{
             token: generateToken(user._id),
         });
     }catch(error){
-        res.state(500).json({message: "Server error", error:error.message})
+        res.status(500).json({message: "Server error", error:error.message})
 
     }
 };
@@ -51,12 +51,12 @@ const loginUser = async(req, res) =>{
         const { email, password } = req.body;
         const user = await User.findOne({email});
         if(!user){
-            return res.status(500).json({message: "Invalid email or password"});
+            return res.status(400).json({message: "Invalid email or password"});
         }
         //compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
-            return res.status(500).json({message: "Invalid email or password"});
+            return res.status(400).json({message: "Invalid email or password"});
         }
         //return user data with jwt
         res.json({

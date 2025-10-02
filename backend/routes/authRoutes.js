@@ -10,7 +10,7 @@ const router = express.Router();
 // Auth Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.post("/profile", protect, getUserProfile);
+router.get("/profile", protect, getUserProfile);
 
 router.post("/upload-image", upload.single("image"), (req, res) =>{
     if(!req.file) {
