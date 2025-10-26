@@ -60,9 +60,6 @@ const AIResponsePreview = ({content}) => {
             thead({children}){
               return <thead className='bg-gray-50'>{children}</thead>;
             },
-            thead({children}){
-              return <thead className=''>{children}</thead>;
-            },
             tbody({children}){
               return <tbody className=''>{children}</tbody>
             },

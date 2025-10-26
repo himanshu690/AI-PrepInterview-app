@@ -10,10 +10,14 @@ import RoleInfoHeader from './RoleInfoHeader'
 import axiosInstance from '../../utils/axiosInstance'
 import { API_PATHS } from '../../utils/apiPath'
 import QuestionCard from '../../components/Cards/QuestionCard'
+import axios from 'axios'
+import AIResponsePreview from './AIResponsePreview'
+import Drawer from '../../components/Drawer'
+import SkeletonLoader from '../../components/Loader/SkeletonLoader'
 const InterviewPrep = () => {
   const {sessionId} = useParams();
   const [sessionData, setSessionData] = useState(null);
-  const [erroMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [openLearnMoreDrawer, setOpenLearnMoreDrawer] = useState(false);
   const [explanation, setExplanation]= useState(null);
@@ -36,10 +40,50 @@ const InterviewPrep = () => {
   }
 
   const generateConceptExplanation = async(question) =>{
+    try {
+      setErrorMsg("")
+      setExplanation(null)
 
-  }
+      setIsLoading(true)
+      setOpenLearnMoreDrawer(true)
+
+      const response = await axiosInstance.post(
+        API_PATHS.AI.GENERATE_EXPLANATION,
+        {
+          question
+        }
+      );
+
+      // DEBUGGING: See what the API is sending back
+      console.log("API Response:", response.data);
+
+      if(response.data && response.data.data){
+        setExplanation(response.data.data);
+      }else {
+        // If the API returns 200 OK but no data, treat it as an error
+        setErrorMsg("Failed to generate explanation, API returned no data.");
+      }
+    } catch (error) {
+      setExplanation(null)
+      setErrorMsg("Failed to generate explanation, try again later");
+      console.error("Error:", error);
+    } finally{
+      setIsLoading(false);
+    }
+  };
   const toggleQuestionPinStatus = async(questionId) =>{
+    try {
+      const response = await axiosInstance.post(
+        API_PATHS.QUESTION.PIN(questionId)
+      );
+      console.log(response);
+      if(response.data && response.data.question) {
+        fetchSessionDetailsById();
 
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
   const uploadMoreQuestions = async(question) =>{
 
@@ -49,7 +93,7 @@ const InterviewPrep = () => {
     if(sessionId){
       fetchSessionDetailsById()
     }
-  }, []);
+  }, [sessionId]);
 
   return (
     <DashboardLayout>
@@ -110,6 +154,23 @@ const InterviewPrep = () => {
               })}
             </AnimatePresence>
           </div>
+        </div>
+        <div>
+          <Drawer
+            isOpen={openLearnMoreDrawer}
+            onClose={()=> setOpenLearnMoreDrawer(false)}
+            title={!isLoading && explanation?.title}
+          >
+            {errorMsg && (
+              <p className='flex gap-2 text-sm text-amber-600 font-medium'>
+                <LuCircleAlert className='mt-1'/> {errorMsg}
+              </p>
+            )}
+            {isLoading && <SkeletonLoader/>}
+            {!isLoading && explanation && (
+              <AIResponsePreview content={explanation?.explanation}/>
+            )}
+          </Drawer>
         </div>
       </div>
 
