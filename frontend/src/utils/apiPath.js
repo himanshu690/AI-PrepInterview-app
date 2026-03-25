@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_URL;
+export const BASE_URL= "http://localhost:8000";
 
 export const API_PATHS = {
 
@@ -15,7 +15,7 @@ export const API_PATHS = {
 
     AI: {
         GENERATE_QUESTIONS: "/api/ai/generate-questions", // Gene
-        GENERATE_EXPLANATION: "api/ai/generate-explaination", //
+        GENERATE_EXPLANATION: "/api/ai/generate-explaination", //
     },
 
     SESSION: {
