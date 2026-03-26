@@ -13,11 +13,14 @@ const { generateInterviewQuestions, generateConceptExplain } = require("./contro
 const app = express();
 app.use(
     cors({
-        origin: "*",
-        methods: ["GET", "POST","PUT", "DELETE"],
-        allowedHeaders: ["Content-type", "Authorization"],
-
-    })
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://your-frontend.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
 );
 
 connectDB()

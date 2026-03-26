@@ -37,7 +37,7 @@ const generateInterviewQuestions = async (req, res) => {
 
     let raw = response.choices[0].message.content;
 
-    console.log("RAW AI RESPONSE:", raw);
+    // console.log("RAW AI RESPONSE:", raw);
 
     // 🔥 STEP 1: Clean markdown if present
     if (typeof raw === "string") {
@@ -124,7 +124,7 @@ const generateConceptExplain = async (req, res) => {
 
     let raw = response.choices[0].message.content;
 
-    console.log("RAW EXPLANATION:", raw);
+    // console.log("RAW EXPLANATION:", raw);
 
     // Clean markdown
     if (typeof raw === "string") {
